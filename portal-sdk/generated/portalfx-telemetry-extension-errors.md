@@ -6,7 +6,7 @@ What we refer to as Client Errors are essentially any JavaScript (“client side
 <a name="extension-client-errors-how-to-log-errors"></a>
 ## How to log errors
 
-Uncaught errors from your extension are automatically bubbled up to the top-level Portal global error handler and then routed to the Kusto ExtEvents table (example query below).
+Uncaught errors from your extension are automatically* bubbled up to the top-level Portal global error handler and then routed to the Kusto ExtEvents table (example query below).
 
 [Open in Kusto Web Explorer](https://dataexplorer.azure.com/clusters/azportalpartner/databases/AzurePortal?query=H4sIAAAAAAAAA02QwUoDQQyG74W+Q+hpF8rW9l4P4oqCQrHrA8TddDY4nRmTrK3gwztDBZvDf8mf74O0Z2u/KJjOZz9wGkkIdkI9K3V8pL3hMcEtoIvVeqznM8iDYQAqN885PWy3sIHVCjgM3KORAolEgQoVYkpRlQawCCeUwMFdQVAIy/niRXdRDP3DublDpeae0YWoxr02bYG9UsoFkkUROR/f0f9ZxgzyJMsr/RR6nNxol8a/LkSrnrQjtU7wcOC+mpSk+070yMGWIPQ55eWbcF0XT+5D5uW41MuHDD8I1je/jImCxjYBAAA=)
 
@@ -19,6 +19,20 @@ ExtEvents
 ```
 
 To log your own runtime client errors, you can can log your caught runtime error using the [Log.Error API](https://github.com/Azure/portaldocs/blob/dev/portal-sdk/generated/portalfx-telemetry.md#logging-errorswarnings-to-extevents-table).
+
+*_Note: if your extension is running on React and not Knockout, then to add the automatic handling of uncaught errors mentioned above you'll need to wrap your extension's app declaration with `withErrorHandlerContext` & `withTelemeteryContext` and your blade with `TelemetryProvider`, as follows:_
+
+```ts
+export const MyExtension = withTelemetryContext(area, withErrorHandlerContext(memo((props: Props) => {
+    ...
+})));
+```
+
+```ts
+<TelemetryProvider source={area} >
+    <App />
+</TelemetryProvider>
+```
 
 <a name="extension-client-errors-how-to-log-errors-best-practices"></a>
 ### Best practices
