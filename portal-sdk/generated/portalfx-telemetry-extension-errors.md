@@ -13,21 +13,21 @@ Uncaught errors from your extension are automatically* bubbled up to the top-lev
 ```sql
 ExtEvents
 | where PreciseTimeStamp > ago(1h)
-    and eventLevel == 2 // indicates error (as oppossed to warning)
-    and area == "MsPortalFx.Base.Diagnostics.ErrorReporter" // global error handler, indicates uncaught error
-    and not(IsTestTraffic(userTypeHint, requestUri)) // not test traffic
+    and eventLevel == 2 -- indicates error (as oppossed to warning)
+    and area == "MsPortalFx.Base.Diagnostics.ErrorReporter" -- global error handler, indicates uncaught error
+    and not(IsTestTraffic(userTypeHint, requestUri)) -- not test traffic
 ```
 
 To log your own runtime client errors, you can can log your caught runtime error using the [Log.Error API](https://github.com/Azure/portaldocs/blob/dev/portal-sdk/generated/portalfx-telemetry.md#logging-errorswarnings-to-extevents-table).
 
-*_Note: if your extension is running on React and not Knockout, then to add the automatic handling of uncaught errors mentioned above you'll need to wrap your extension's app declaration with `withErrorHandlerContext` & `withTelemeteryContext` and your blade with `TelemetryProvider`, as follows:_
+*_Note: if your extension is running on React and not Knockout, then to add the automatic handling of uncaught errors mentioned above you'll need to wrap your extension's app declaration with `withErrorHandlerContext` & `withTelemeteryContext`..._
 
 ```ts
 export const MyExtension = withTelemetryContext(area, withErrorHandlerContext(memo((props: Props) => {
     ...
 })));
 ```
-
+_...and also wrap the rendering of your blade with `TelemetryProvider`:_
 ```ts
 <TelemetryProvider source={area} >
     <App />
@@ -37,7 +37,7 @@ export const MyExtension = withTelemetryContext(area, withErrorHandlerContext(me
 <a name="extension-client-errors-how-to-log-errors-best-practices"></a>
 ### Best practices
 
-To ensure that the error information from the caught error is correctly captured and serialized to your extension client error logs in ExtEvents, please ensure to satisfy atleast one of the follow requirements:
+To ensure that the error information from the caught error is correctly captured and serialized to your extension client error logs in ExtEvents, please ensure to satisfy at least one of the follow requirements:
 
 1. Log the error object instead of just a string message
   - Bad: `Log.error(“Hello Hal, do you read me?”)`
